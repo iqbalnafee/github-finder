@@ -1,6 +1,12 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
 class search extends Component {
+
+    static propTypes = {
+        clearUsers: PropTypes.func.isRequired,
+        showClear:  PropTypes.bool.isRequired,
+    };
 
     state={
         text:''
@@ -19,6 +25,9 @@ class search extends Component {
     };
 
     render() {
+
+        const {showClear,clearUsers} = this.props;
+
         return (
             <div>
 
@@ -28,6 +37,12 @@ class search extends Component {
                     <input type="submit" value="Search" className="btn btn-dark btn-block"/>
 
                 </form>
+
+                {
+                    showClear && <input type="submit" className="btn btn-success btn-block" onClick={clearUsers} value="clear"/>
+                }
+
+                
                 
             </div>
         )

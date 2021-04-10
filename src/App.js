@@ -23,6 +23,10 @@ class App extends React.Component{
     this.setState({users:response.data.items,loading:false});
   }
 
+  clearUser = ()=> {
+    this.setState({users:[],loading:false});
+  }
+
 
   async componentDidMount(){
     this.setState({loading:true});
@@ -46,12 +50,14 @@ class App extends React.Component{
 
   render(){
 
+    const {users,loading} = this.state;
+
 
     return (
       <div className="App container">
         <Navbar  title="Github Finder" icon="fab fa-github"/>
-        <Search searchUsers={this.searchUsers}/>
-        <div className="container"><Users loading={this.state.loading} users={this.state.users} /></div>
+        <Search searchUsers={this.searchUsers} clearUsers = {this.clearUser} showClear={users.length>0?true:false}/>
+        <div className="container"><Users loading={loading} users={users} /></div>
         
       </div>
     );
