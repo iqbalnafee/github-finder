@@ -10,6 +10,8 @@ import User from './components/Users/User'
 import {About2} from './components/pages/About'
 import axios from 'axios'
 
+import GithubState from './context/github/GithubState'
+
 const App = () =>{
 
 
@@ -100,6 +102,8 @@ const App = () =>{
         <Alert a={alert}/>
 
 
+        <GithubState>
+
         <Router>
 
           <Switch>
@@ -131,6 +135,8 @@ const App = () =>{
 
           </Switch>
         </Router>
+
+        </GithubState>
 
         
         
