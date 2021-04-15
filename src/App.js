@@ -1,6 +1,6 @@
 
 import './App.css';
-import React,{Fragment,Component} from 'react'
+import React,{Fragment,useState} from 'react'
 import {BrowserRouter as Router,Switch,Route} from 'react-router-dom'
 import Navbar from './components/layout/Navbar'
 import Users from './components/Users/Users'
@@ -10,90 +10,94 @@ import User from './components/Users/User'
 import {About2} from './components/pages/About'
 import axios from 'axios'
 
-class App extends React.Component{
+const App = () =>{
 
-  state = {
 
-    users:[],
-    user:{},
-    repos:[],
-    loading:false,
-    alert: null
+  const [users,setUsers]  = useState([]);
+  const [user,setUser]  = useState({});
+  const [repos,setRepos]  = useState([]);
+  const [loading,setLoading]  = useState(false);
+  const [alert,setAlert]  = useState(null);
 
-  }
+  
 
-  searchUsers = async param1 => {
-    //this.setState({users:this.users,loading:true});
+  const searchUsers = async (param1) => {
+
     const response = await axios.get(`https://api.github.com/search/users?q=${param1}&client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`);
 
+    setUsers(response.data.items);
+    setLoading(false);
 
-    this.setState({users:response.data.items,loading:false});
   }
 
   //get single user
 
-  getUser = async (username)=>{
+  const getUser = async (username)=>{
 
     const response = await axios.get(`https://api.github.com/users/${username}?&client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`);
 
-
-    this.setState({user:response.data,loading:false});
+    setUser(response.data);
+    setLoading(false);
 
   }
 
   //get Users Repos
 
-  getUserRepos = async (username)=>{
+  const getUserRepos = async (username)=>{
 
     const response = await axios.get(`https://api.github.com/users/${username}/repos?per_page=20&sort=created:asc&client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`);
-
-
-    this.setState({repos:response.data,loading:false});
+    
+    setRepos(response.data);
+    setLoading(false);
 
   }
 
 
 
-  clearUser = ()=> {
-    this.setState({users:[],loading:false});
+  const clearUser = ()=> {
+
+
+    setUsers([]);
+    setLoading(false);
   }
 
-  setAlert= (msg,type) =>{
-    //console.log('alert msg: '+msg+' '+type);
-    this.setState({alert:{msg:msg,type:type}});
-    console.log('alert.msg: '+alert.msg+' '+type);
+  //const setAlert
+
+  const showAlert= (msg,type) =>{
+
+
+    //setAlert(msg,type);
+    console.log('alerts');
   }
 
 
-  async componentDidMount(){
-    this.setState({loading:true});
-    const response = await axios.get('https://api.github.com/users');
-    const default_users = [
+  // async componentDidMount(){
+  //   this.setState({loading:true});
+  //   const response = await axios.get('https://api.github.com/users');
+  //   const default_users = [
 
-      {
+  //     {
         
-        "login": "iqbalnafee",
-        "id": 100001,
-        "avatar_url": "https://avatars.githubusercontent.com/u/33998031?v=4",
-        "html_url": "https://github.com/iqbalnafee",        
-      }
+  //       "login": "iqbalnafee",
+  //       "id": 100001,
+  //       "avatar_url": "https://avatars.githubusercontent.com/u/33998031?v=4",
+  //       "html_url": "https://github.com/iqbalnafee",        
+  //     }
 
-    ];
-    response.data = default_users.concat(response.data);;
-    this.setState({users:response.data,loading:false});
+  //   ];
+  //   response.data = default_users.concat(response.data);;
+  //   this.setState({users:response.data,loading:false});
 
-  }
+  // }
   
 
-  render(){
-
-    const {users,loading,user,repos} = this.state;
 
 
     return (
+      
       <div className="App container">
         <Navbar  title="Github Finder" icon="fab fa-github"/>
-        <Alert a={this.state.alert}/>
+        <Alert a={alert}/>
 
 
         <Router>
@@ -103,7 +107,7 @@ class App extends React.Component{
             
               <Fragment>
 
-                <Search searchUsers={this.searchUsers} clearUsers = {this.clearUser} showClear={users.length>0?true:false} setAlert={this.setAlert}/>
+                <Search searchUsers={searchUsers} clearUsers = {clearUser} setAlert={showAlert} showClear={users.length>0?true:false} />
                 <Users loading={loading} users={users} />
 
               </Fragment>
@@ -121,7 +125,7 @@ class App extends React.Component{
 
             <Route exact path='/user/:login' render={props => (
 
-              <User {...props} getUser={this.getUser} getUserRepos={this.getUserRepos} repos={repos} user={user} />
+              <User {...props} getUser={getUser} getUserRepos={getUserRepos} repos={repos} user={user} />
 
             )} />
 
@@ -133,8 +137,8 @@ class App extends React.Component{
       </div>
     );
     
-  }
-  //mul=this.mul*2;
+  
+
 
 
   
