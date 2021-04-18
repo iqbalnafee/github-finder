@@ -1,17 +1,21 @@
-import React, { Component } from 'react'
+import React, { Component,useContext } from 'react'
 import UserItem from './UserItem'
 
-class Users extends Component {
+import GithubContext from '../../context/github/githubContext'
 
-    
+const Users =  () => {
 
-    render() {
+    const githubContext = useContext(GithubContext);
+
+    const {loading,users} = githubContext;
+
+
         return (
             <div style={userStyle}>
 
                 {
 
-                    this.props.users.map( u => 
+                    users.map( u => 
                         
                         (
 
@@ -23,7 +27,6 @@ class Users extends Component {
                 
             </div>
         )
-    }
 }
 
 const userStyle = {
